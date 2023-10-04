@@ -1,0 +1,7 @@
+Bridge_Large : 7
+Bridge_Small : 7
+PTK_Bridge_Large: 6
+PTK_Bridge_Medium: 4
+PTK_Bridge_Small: 3
+Ground_08: 4
+Ground_01: 7
