@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33624630899115260}
   - component: {fileID: 23795723774636598}
   - component: {fileID: 3533072634083062476}
+  - component: {fileID: -8089504848893766447}
   m_Layer: 6
   m_Name: GroundMove
   m_TagString: Untagged
@@ -96,3 +97,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 2751bfe6837879649bc54e1823cdf856, type: 3}
+--- !u!114 &-8089504848893766447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203645617596380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98935922ecb994541a2c96733ffc93a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waypoints: []
+  speed: 1
