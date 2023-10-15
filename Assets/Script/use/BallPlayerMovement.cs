@@ -86,6 +86,14 @@ public class BallPlayerMovement : MonoBehaviour
             isDead=true;
 			
         }
+        if(collision.gameObject.CompareTag("Player"))
+        {
+            rb.isKinematic=true;
+            AudioManager.instance.audioSource.clip=AudioManager.instance.clipDie;
+			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
+            isDead=true;
+			
+        }
         if(collision.gameObject.CompareTag("SaveGame"))
         {
             
