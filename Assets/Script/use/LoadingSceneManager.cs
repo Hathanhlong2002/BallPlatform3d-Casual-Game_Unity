@@ -16,7 +16,7 @@ public class LoadingSceneManager : MonoBehaviour
 
     IEnumerator LoadSceneWithTiming()
     {
-        float loadingTime = 30.0f; // Thời gian loading mong muốn (30 giây)
+        float loadingTime = 10.0f; // Thời gian loading mong muốn (30 giây)
         float elapsedTime = 0.0f;  // Thời gian đã trôi qua
 
         while (elapsedTime < loadingTime)
