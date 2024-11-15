@@ -5,20 +5,30 @@ using UnityEngine;
 public class GenMap : MonoBehaviour
 {
     public GameObject firstObject;
-    public List<GameObject> objects;
-
+    public float currentPositionZ;
+    public List<ObjectGen> objectGenList;
     private void Start()
     {
-        GenNewMap();
+        GenListObject();
     }
-    public void GenNewMap()
+    private void GenListObject()
     {
-        for (int i = 0; i < 20; i++)
+        for (int i=0;i<objectGenList.Count;i++)
         {
-            GameObject tmp = Instantiate(objects[0].gameObject);
-            tmp.transform.SetPositionAndRotation(firstObject.transform.position+new Vector3(0f,i%2==0?0.01f:-0.01f,6f*i),
+            ObjectGen tempGen = objectGenList[i];
+            GenNewMap(tempGen.obj, tempGen.count, tempGen.distance);
+        }
+    }
+    public void GenNewMap(GameObject objectGen,int count,float distance)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            GameObject tmp = Instantiate(objectGen);
+            float distanceTmp = distance * (i + 1) + currentPositionZ;
+            tmp.transform.SetPositionAndRotation(firstObject.transform.position+new Vector3(0f,i%2==0?0.01f:-0.01f, distanceTmp),
                 Quaternion.identity);
             tmp.transform.SetParent(transform,false);
         }
+        currentPositionZ += distance*count;
     }
 }
