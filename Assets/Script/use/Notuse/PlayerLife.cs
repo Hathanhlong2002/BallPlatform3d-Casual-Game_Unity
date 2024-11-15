@@ -31,8 +31,8 @@ public class PlayerLife : MonoBehaviour
         if(PlayerPrefs.GetInt("ColiderTrig")==1)
         {
             gameObject.transform.position=new Vector3(pX,pY,pZ);
-            ItemCollector.instance.hear=hearth;
-            ItemCollector.instance.hearthText.text="Hearth: "+ItemCollector.instance.hear;
+            ItemCollector.instance.heart=hearth;
+            ItemCollector.instance.hearthText.text="Hearth: "+ItemCollector.instance.heart;
         }
     }
     private void Update() {

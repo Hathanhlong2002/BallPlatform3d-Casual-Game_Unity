@@ -8,7 +8,7 @@ public class ItemCollector : MonoBehaviour
     public Text coinsText;
     public Text hearthText;
     public int coins=0;
-    public int hear=0;
+    public int heart=0;
     public static ItemCollector instance;
     void Awake()
     {
@@ -26,7 +26,7 @@ public class ItemCollector : MonoBehaviour
         }
         
         coinsText.text="Coins: "+PlayerPrefs.GetInt("Coin");
-        hearthText.text="Hearth: "+hear;
+        hearthText.text="Hearth: "+heart;
     }
    
 }
