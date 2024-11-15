@@ -14,12 +14,6 @@ public class LevelSelectMenu : MonoBehaviour
     public GameObject nextButton;
     public GameObject backButton;
     
-    GameObject resetButton;
-    void Awake()
-    {
-        resetButton = GameObject.Find("ResetButton");
-        resetButton.SetActive(false);
-    }
     void OnEnable()
     {
         levelButtons=GetComponentsInChildren<LevelButton>();
@@ -78,16 +72,5 @@ public class LevelSelectMenu : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
-    public void ResetGame()
-    {
-        PlayerPrefs.DeleteAll();
-        SceneManager.LoadScene(1);
-    }
-    public void OpenResetButton()
-    {
-        GameObject OpenResetButton = GameObject.Find("ToResetButton");
-
-        OpenResetButton.SetActive(false);
-        resetButton.SetActive(true);
-    }
+  
 }
