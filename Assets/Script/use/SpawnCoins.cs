@@ -6,7 +6,7 @@ public class SpawnCoins : MonoBehaviour
 {
     public GameObject coinPrefab;
     public Transform targetparent;
-    void Start() 
+    public void Spawn() 
     {
         var groundObjects = GameObject.FindGameObjectsWithTag("Ground");
         foreach (var groundObject in groundObjects) 

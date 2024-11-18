@@ -7,9 +7,11 @@ public class GenMap : MonoBehaviour
     public GameObject firstObject;
     public float currentPositionZ;
     public List<ObjectGen> objectGenList;
+    public SpawnCoins spawnCoins;
     private void Start()
     {
         GenListObject();
+        spawnCoins.Spawn();
     }
     private void GenListObject()
     {
