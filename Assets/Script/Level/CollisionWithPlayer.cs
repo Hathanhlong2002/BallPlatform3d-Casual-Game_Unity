@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class CollisionWithPlayer : MonoBehaviour
 {
+    AudioManager audioManager;
+    ItemCollector collector;
+
+    private void Start()
+    {
+        audioManager = AudioManager.Instance;
+        collector = ItemCollector.Instance;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            AudioManager.instance.audioSource.clip = AudioManager.instance.GetCoin;
-            AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
+            audioManager.audioSource.clip = audioManager.GetCoin;
+            audioManager.audioSource.PlayOneShot(audioManager.audioSource.clip);
             Destroy(gameObject);
-            ItemCollector.instance.coins += 10;
-            int coinsTmp = PlayerPrefs.GetInt("Coin") + ItemCollector.instance.coins;
+            collector.coins += 10;
+            int coinsTmp = PlayerPrefs.GetInt("Coin") + collector.coins;
 
-            ItemCollector.instance.coinsText.text = "Coins: " + (coinsTmp);
+            collector.coinsText.text = "Coins: " + (coinsTmp);
         }
     }
 }

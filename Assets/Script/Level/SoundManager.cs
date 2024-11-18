@@ -11,6 +11,7 @@ public class SoundManager : MonoBehaviour
         if(!PlayerPrefs.HasKey("musicVolume"))
         {
             PlayerPrefs.SetFloat("musicVolume",1);
+            PlayerPrefs.Save();
             Load();
         }
         else
@@ -30,6 +31,7 @@ public class SoundManager : MonoBehaviour
     private void Save()
     {
         PlayerPrefs.SetFloat("musicVolume",volumeSlider.value);
+        PlayerPrefs.Save();
     }
 
    

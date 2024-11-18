@@ -8,25 +8,25 @@ public class Finish : MonoBehaviour
     public GameObject rightDoor;
     public GameObject leftDoor;
     public int nextSceneLoad;
+    AudioManager audioManager;
     private void Awake() 
     {
         nextSceneLoad=SceneManager.GetActiveScene().buildIndex+1;
     }
     void Start()
     {
-        nextSceneLoad=SceneManager.GetActiveScene().buildIndex+1;   
+        audioManager = AudioManager.Instance;
     }
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Player"))
         {
-            
-            AudioManager.instance.audioSource.clip=AudioManager.instance.clipVictory;
-			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
+
+            audioManager.audioSource.clip= audioManager.clipVictory;
+			audioManager.audioSource.PlayOneShot(audioManager.audioSource.clip);
             rightDoor.transform.rotation = Quaternion.Euler(0f, -90f, 0f);;
             leftDoor.transform.rotation = Quaternion.Euler(0f, 270f, 0f);
-            StartCoroutine(Delay(2.0f));
-            GameManager.instance.VictoryDialog.SetActive(true);
+            UIManager.Instance.victoryPanel.SetActive(true);
             if(nextSceneLoad-2>PlayerPrefs.GetInt("level") )
             {
                 PlayerPrefs.SetInt("unlockedLevel",nextSceneLoad-1);
@@ -35,8 +35,5 @@ public class Finish : MonoBehaviour
         }
 
     }
-    private IEnumerator Delay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-    }
+  
 }

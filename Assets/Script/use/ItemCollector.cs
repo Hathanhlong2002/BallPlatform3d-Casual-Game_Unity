@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-public class ItemCollector : MonoBehaviour
+public class ItemCollector : Singleton<ItemCollector>
 {
     public Text coinsText;
     public Text hearthText;
     public int coins=0;
     public int heart=0;
-    public static ItemCollector instance;
-    void Awake()
-    {
-        instance=this;
-    }
     void Start()
     {
         if (!PlayerPrefs.HasKey("Coin"))

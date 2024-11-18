@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager instance;
+
     public Text levelText;
     public GameObject VictoryDialog;
-    void Awake()
-    {
-        instance=this;
-    }
+
     void Start()
     {
         VictoryDialog.SetActive(false);
