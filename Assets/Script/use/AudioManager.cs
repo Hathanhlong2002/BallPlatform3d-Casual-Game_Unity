@@ -15,17 +15,13 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         instance=this;
-        backgroundaudioSource.clip = backgroundClip; 
+ 
+    }
+    private void Start()
+    {
+        backgroundaudioSource.clip = backgroundClip;
         backgroundaudioSource.loop = true;
         backgroundaudioSource.Play();
     }
-    void Start()
-    {
-        
-    }
 
-    void Update()
-    {
-        
-    }
 }

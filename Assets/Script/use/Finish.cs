@@ -31,10 +31,6 @@ public class Finish : MonoBehaviour
             {
                 PlayerPrefs.SetInt("unlockedLevel",nextSceneLoad-1);
                 PlayerPrefs.SetInt("level",PlayerPrefs.GetInt("level")+1);
-                
-                Debug.Log("level"+PlayerPrefs.GetInt("level"));
-                Debug.Log("unlockedLevel"+PlayerPrefs.GetInt("unlockedLevel"));
-                Debug.Log("nextsceneLoad"+nextSceneLoad);
             }
         }
 
