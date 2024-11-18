@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
@@ -18,5 +19,8 @@ public class UIManager : Singleton<UIManager>
         dialogPanel.SetActive(false);
         
     }
-  
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene("LevelSelection");
+    }
 }

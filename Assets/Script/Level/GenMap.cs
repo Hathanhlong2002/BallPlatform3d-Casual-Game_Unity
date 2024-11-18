@@ -8,8 +8,17 @@ public class GenMap : MonoBehaviour
     public float currentPositionZ;
     public List<ObjectGen> objectGenList;
     public SpawnCoins spawnCoins;
+    public LevelManagerObject levelManagerObject;
+    public List<LevelGen> listlevelGen=new List<LevelGen>();
+    public ObjectGen endMap;
+    private void Awake()
+    {
+        listlevelGen = levelManagerObject.levelGensList;
+        objectGenList = listlevelGen[0].useList;
+    }
     private void Start()
     {
+        objectGenList.Add(endMap);
         GenListObject();
         spawnCoins.Spawn();
     }
@@ -32,5 +41,6 @@ public class GenMap : MonoBehaviour
             tmp.transform.SetParent(transform,false);
         }
         currentPositionZ += distance*count;
+
     }
 }

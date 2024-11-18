@@ -62,7 +62,6 @@ public class LevelButton : MonoBehaviour
     public void OnClick()
     {
         menu.StartLevel(PlayerPrefs.GetInt("level"));
-        // SceneManager.LoadScene("Level"+(PlayerPrefs.GetInt("level")+1).ToString());
-        SceneManager.LoadScene("Level "+(levelText.text).ToString());
+        SceneManager.LoadScene("LevelGame");
     }
 }

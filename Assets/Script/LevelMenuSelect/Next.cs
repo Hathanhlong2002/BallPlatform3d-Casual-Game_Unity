@@ -20,7 +20,7 @@ public class Next : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("Coin",PlayerPrefs.GetInt("Coin")+ItemCollector.instance.coins);
+            PlayerPrefs.SetInt("Coin",PlayerPrefs.GetInt("Coin")+ItemCollector.Instance.coins);
         }
         SceneManager.LoadScene(nextSceneLoad);
     }

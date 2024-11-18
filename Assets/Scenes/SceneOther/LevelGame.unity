@@ -173,10 +173,13 @@ MonoBehaviour:
   - obj: {fileID: 8540028612619660921, guid: b302afec86705b34b9ffd93682390a7c, type: 3}
     distance: 8
     count: 2
-  - obj: {fileID: 9198656376342807219, guid: 24094459775b635448bf2af96a86e1e2, type: 3}
-    distance: 6
-    count: 1
   spawnCoins: {fileID: 579132413}
+  levelManagerObject: {fileID: 11400000, guid: 81abcac2704713845898fc79e1157120, type: 2}
+  listlevelGen: []
+  endMap:
+    obj: {fileID: 9198656376342807219, guid: 24094459775b635448bf2af96a86e1e2, type: 3}
+    distance: 7
+    count: 1
 --- !u!4 &83469599
 Transform:
   m_ObjectHideFlags: 0
@@ -1497,6 +1500,14 @@ PrefabInstance:
     - target: {fileID: 2008717740785935376, guid: 1b9828947db837b4b85cf09d2c4b9337, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 602238987}
+    - target: {fileID: 2008717740785935376, guid: 1b9828947db837b4b85cf09d2c4b9337, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 2008717740785935376, guid: 1b9828947db837b4b85cf09d2c4b9337, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2008717740900143066, guid: 1b9828947db837b4b85cf09d2c4b9337, type: 3}
       propertyPath: m_AnchorMax.y
