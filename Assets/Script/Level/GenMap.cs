@@ -11,10 +11,14 @@ public class GenMap : MonoBehaviour
     public LevelManagerObject levelManagerObject;
     public List<LevelGen> listlevelGen=new List<LevelGen>();
     public ObjectGen endMap;
+    int level;
     private void Awake()
     {
+        level = PlayerPrefs.GetInt("level");
+        Debug.Log("level:" + level);
         listlevelGen = levelManagerObject.levelGensList;
-        objectGenList = listlevelGen[0].useList;
+        objectGenList = listlevelGen[level-1].useList;
+        
     }
     private void Start()
     {

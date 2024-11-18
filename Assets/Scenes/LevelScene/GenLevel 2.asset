@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18fd7afe93768ee45bbe287bb64cf634, type: 3}
-  m_Name: GenLevel 1
+  m_Name: GenLevel 2
   m_EditorClassIdentifier: 
   objectGenListSample:
   - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
@@ -44,7 +44,7 @@ MonoBehaviour:
   - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
     distance: 6
     count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
+  - obj: {fileID: 6595301412401198101, guid: 15e121fef2fb928499e5f0e5c686da3b, type: 3}
     distance: 6
     count: 5
   - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}

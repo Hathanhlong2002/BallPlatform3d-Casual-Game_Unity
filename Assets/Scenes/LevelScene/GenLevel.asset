@@ -50,24 +50,3 @@ MonoBehaviour:
   - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
     distance: 6
     count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 9198656376342807219, guid: 24094459775b635448bf2af96a86e1e2, type: 3}
-    distance: 7
-    count: 1

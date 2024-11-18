@@ -32,5 +32,8 @@ public class AudioManager : Singleton<AudioManager>
     {
         audioSource.volume = volumeSlider.value;
         backgroundaudioSource.volume = audioSource.volume;
+        PlayerPrefs.SetFloat("musicVolume", volumeSlider.value);
+        PlayerPrefs.Save();
+
     }
 }

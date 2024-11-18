@@ -23,4 +23,8 @@ public class UIManager : Singleton<UIManager>
     {
         SceneManager.LoadScene("LevelSelection");
     }
+    public void LoadCurrentScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
