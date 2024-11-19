@@ -14,7 +14,7 @@ public class GenMap : MonoBehaviour
     int level;
     private void Awake()
     {
-        level = PlayerPrefs.GetInt("level");
+        level = PlayerPrefs.GetInt("currentLevel");
         Debug.Log("level:" + level);
         listlevelGen = levelManagerObject.levelGensList;
         objectGenList = listlevelGen[level-1].useList;

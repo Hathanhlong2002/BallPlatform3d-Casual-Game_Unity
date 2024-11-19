@@ -61,7 +61,10 @@ public class LevelButton : MonoBehaviour
     }
     public void OnClick()
     {
+        int.TryParse(levelText.text,out level);
         menu.StartLevel(PlayerPrefs.GetInt("level"));
+        PlayerPrefs.SetInt("currentLevel", level);
         SceneManager.LoadScene("LevelGame");
+        
     }
 }
