@@ -104,4 +104,7 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/SceneOther/CustomLevel.unity
+    guid: 33c28e6bbeb4e3145b5f7c6a798d58e1
   m_configObjects: {}
