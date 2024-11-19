@@ -17,12 +17,20 @@ public class GenMap : MonoBehaviour
         level = PlayerPrefs.GetInt("currentLevel");
         Debug.Log("level:" + level);
         listlevelGen = levelManagerObject.levelGensList;
+        if (level-1  >= listlevelGen.Count)
+        {
+            level = 1;
+        }
         objectGenList = listlevelGen[level-1].useList;
         
     }
     private void Start()
     {
-        objectGenList.Add(endMap);
+        if (!objectGenList.Contains(endMap))
+        {
+            objectGenList.Add(endMap);
+        }
+        
         GenListObject();
         spawnCoins.Spawn();
     }

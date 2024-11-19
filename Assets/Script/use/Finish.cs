@@ -7,12 +7,8 @@ public class Finish : MonoBehaviour
 {
     public GameObject rightDoor;
     public GameObject leftDoor;
-    public int nextSceneLoad;
     AudioManager audioManager;
-    private void Awake() 
-    {
-        nextSceneLoad=SceneManager.GetActiveScene().buildIndex+1;
-    }
+
     void Start()
     {
         audioManager = AudioManager.Instance;
@@ -27,6 +23,7 @@ public class Finish : MonoBehaviour
             rightDoor.transform.rotation = Quaternion.Euler(0f, -90f, 0f);;
             leftDoor.transform.rotation = Quaternion.Euler(0f, 270f, 0f);
             UIManager.Instance.victoryPanel.SetActive(true);
+
             if (PlayerPrefs.GetInt("unlockedLevel") == PlayerPrefs.GetInt("currentLevel") )
             {
                 PlayerPrefs.SetInt("unlockedLevel", PlayerPrefs.GetInt("currentLevel") + 1);

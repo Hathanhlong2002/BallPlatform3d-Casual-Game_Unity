@@ -1628,6 +1628,10 @@ PrefabInstance:
       value: Panel
       objectReference: {fileID: 0}
     - target: {fileID: 5542502933318247252, guid: 02735e209df61734a88272d06daf7520, type: 3}
+      propertyPath: totalLevel
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542502933318247252, guid: 02735e209df61734a88272d06daf7520, type: 3}
       propertyPath: unlockedLevel
       value: 1
       objectReference: {fileID: 0}

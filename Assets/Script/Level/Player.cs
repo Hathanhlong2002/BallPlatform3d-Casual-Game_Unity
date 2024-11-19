@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
         {
             audioManager.audioSource.clip=audioManager.clipDie;
 			audioManager.audioSource.PlayOneShot(audioManager.audioSource.clip);
-			StartCoroutine(LoadSceneWithDelay(1f));
+			StartCoroutine(LoadSceneWithDelay(0.5f));
         }
 
         if (collision.gameObject.CompareTag("SaveGame"))

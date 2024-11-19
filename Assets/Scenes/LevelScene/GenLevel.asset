@@ -37,16 +37,4 @@ MonoBehaviour:
   useList:
   - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
     distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
+    count: 10

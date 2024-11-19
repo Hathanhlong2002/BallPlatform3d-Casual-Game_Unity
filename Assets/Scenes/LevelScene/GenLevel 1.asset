@@ -35,21 +35,6 @@ MonoBehaviour:
     distance: 6
     count: 1
   useList:
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
-  - obj: {fileID: 5488720365207921787, guid: 4fbbc71dd76862a48a6ed36e333b7eb0, type: 3}
-    distance: 6
-    count: 5
   - obj: {fileID: 1614529629518805581, guid: b8816ec4db3f1834eac976592d474124, type: 3}
     distance: 7
-    count: 5
+    count: 10

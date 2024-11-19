@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelGensList:
   - {fileID: 11400000, guid: 9045ea3fda672494c9dfec56d8777778, type: 2}
-  - {fileID: 11400000, guid: e85ac2885d441ef47951b5a330b1ef63, type: 2}
-  - {fileID: 11400000, guid: 3dbd852fd73b676418433944b3bc0be2, type: 2}
-  - {fileID: 11400000, guid: a563620e370aabc42a54a7ec234b55b8, type: 2}
-  - {fileID: 11400000, guid: fa738cf851584974fbbb5bf482796e29, type: 2}
+  - {fileID: 11400000, guid: 3617f68277d606d4e80974dd31dd5b2c, type: 2}
+  - {fileID: 11400000, guid: 170e5b9b168fae147bd8db692900b134, type: 2}
+  - {fileID: 11400000, guid: 4a1bb3efe7c26ec4892b333956f822f2, type: 2}
+  - {fileID: 11400000, guid: 10b23edf26ffe64478580e3252facc45, type: 2}
+  - {fileID: 11400000, guid: 472a3e25080143b4c83fe18f562e6fea, type: 2}
+  - {fileID: 11400000, guid: c64b5acba2bcd814a9de8f7f53193427, type: 2}
+  - {fileID: 11400000, guid: d2a8c7ee03e2d0e40895731475367551, type: 2}
+  - {fileID: 11400000, guid: 1843d16fd5cf900448baa21f93bca942, type: 2}
+  - {fileID: 11400000, guid: 217aef98dd7118f489ca3d6e5e7fe918, type: 2}
