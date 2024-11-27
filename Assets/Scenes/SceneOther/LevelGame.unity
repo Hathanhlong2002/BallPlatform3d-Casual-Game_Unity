@@ -174,12 +174,13 @@ MonoBehaviour:
     distance: 8
     count: 2
   spawnCoins: {fileID: 579132413}
-  levelManagerObject: {fileID: 11400000, guid: 81abcac2704713845898fc79e1157120, type: 2}
-  listlevelGen: []
   endMap:
     obj: {fileID: 9198656376342807219, guid: 24094459775b635448bf2af96a86e1e2, type: 3}
     distance: 7
     count: 1
+  levelManagerObject: {fileID: 11400000, guid: 81abcac2704713845898fc79e1157120, type: 2}
+  listlevelGen:
+  - {fileID: 11400000, guid: 9045ea3fda672494c9dfec56d8777778, type: 2}
 --- !u!4 &83469599
 Transform:
   m_ObjectHideFlags: 0

@@ -8,7 +8,13 @@ public class UIManager : Singleton<UIManager>
 {
     public GameObject dialogPanel;
     public GameObject victoryPanel;
-
+    public GameObject objectGen;
+    public Transform contentObjectGen;
+    
+  
+    public GameObject dataResultPrefab;
+    public Transform contentObjectResult;
+    public List<ObjectGen> newobjectGens;
     public void OpenDialog()
     {
         dialogPanel.SetActive(true);
