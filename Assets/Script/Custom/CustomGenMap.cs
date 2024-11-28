@@ -58,6 +58,7 @@ public class CustomGenMap : MonoBehaviour
         {
             Destroy(transformChild.gameObject);
         }
+        currentPositionZ = 0;
         UIManager.Instance.newobjectGens.Clear();
         UIManager.Instance.ViewResultGen();
 
