@@ -16,21 +16,23 @@ public class CustomGenMap : MonoBehaviour
     }
     private void Start()
     {
-        if (!objectGenList.Contains(endMap))
-        {
-            objectGenList.Add(endMap);
-        }
+        
 
-        GenListObject();
-        spawnCoins.Spawn();
+        GenListObject(objectGenList);
+       
     }
-    private void GenListObject()
+    private void GenListObject(List<ObjectGen> listGen)
     {
-        for (int i = 0; i < objectGenList.Count; i++)
+        if (listGen.Count > 0 && !listGen.Contains(endMap))
         {
-            ObjectGen tempGen = objectGenList[i];
+            listGen.Add(endMap);
+        }
+        for (int i = 0; i < listGen.Count; i++)
+        {
+            ObjectGen tempGen = listGen[i];
             GenNewMap(tempGen.obj, tempGen.count, tempGen.distance);
         }
+        spawnCoins.Spawn();
     }
     public void GenNewMap(GameObject objectGen, int count, float distance)
     {
@@ -43,6 +45,21 @@ public class CustomGenMap : MonoBehaviour
             tmp.transform.SetParent(transform, false);
         }
         currentPositionZ += distance * count;
+
+    }
+    public void CreateMap()
+    {
+        GenListObject(UIManager.Instance.newobjectGens);
+
+    }
+    public void ResetMap()
+    {
+        foreach(Transform transformChild in gameObject.transform)
+        {
+            Destroy(transformChild.gameObject);
+        }
+        UIManager.Instance.newobjectGens.Clear();
+        UIManager.Instance.ViewResultGen();
 
     }
 }

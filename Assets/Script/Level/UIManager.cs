@@ -1,6 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -39,4 +41,26 @@ public class UIManager : Singleton<UIManager>
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
     }
+    public void ViewResultGen()
+    {
+        // Xóa toàn bộ các phần tử con hiện tại trong contentObjectResult
+        foreach (Transform child in contentObjectResult.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Tạo lại các phần tử con theo thứ tự trong newobjectGens
+        foreach (var objGen in newobjectGens)
+        {
+            var genChild = Instantiate(dataResultPrefab, contentObjectResult.transform);
+            var textComponent = genChild.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            if (textComponent != null)
+            {
+                textComponent.text = objGen.obj.name;
+            }
+        }
+    }
+
+
 }

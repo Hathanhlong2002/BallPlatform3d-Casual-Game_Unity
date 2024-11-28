@@ -71,6 +71,10 @@ public class LevelSelectMenu : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
+    } 
+    public void CustomLevel()
+    {
+        SceneManager.LoadScene("CustomLevel");
     }
   
 }

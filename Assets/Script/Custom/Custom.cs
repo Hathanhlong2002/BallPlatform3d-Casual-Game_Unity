@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Custom : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class Custom : MonoBehaviour
             tmp.transform.SetParent(parent.transform,false);
             ObjectData data= tmp.GetComponent<ObjectData>();
             data.nameObject.text = objectGens[i].obj.name;
+            int index = i;
+            data.increase.GetComponent<Button>().onClick.AddListener(() => ClickAddObjectGen(index));
+            data.decrease.GetComponent<Button>().onClick.AddListener(() => ClickDecreaseObjectGen(index));
         }
     }
     public void SettingCustom()
@@ -32,5 +36,21 @@ public class Custom : MonoBehaviour
         isObjectPanelActive = !isObjectPanelActive;
         objectPanel.SetActive(isObjectPanelActive);
         resultGenPanel.SetActive(isObjectPanelActive);
+    }
+    public void ClickAddObjectGen(int index)
+    {
+        UIManager.Instance.newobjectGens.Add(objectGens[index]);
+        UIManager.Instance.ViewResultGen();
+    } 
+    public void ClickDecreaseObjectGen(int index)
+    {
+        if (index >= 0 && index < UIManager.Instance.newobjectGens.Count)
+        {
+            if (UIManager.Instance.newobjectGens.Contains(objectGens[index]))
+            {
+                UIManager.Instance.newobjectGens.Remove(objectGens[index]);
+            }
+        }
+        UIManager.Instance.ViewResultGen();
     }
 }
