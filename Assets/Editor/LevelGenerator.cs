@@ -9,9 +9,8 @@ using UnityEngine.UI;
 
 public class LevelGenerator : EditorWindow
 {
-    private int levelNumber = 30;
-    private int trackLength = 12; // number of segments
-    private float segmentSpacing = 10f;
+    private int startLevel = 16;
+    private int endLevel = 50;
 
     [MenuItem("Tools/Ball Game/Level Generator Window")]
     public static void ShowWindow()
@@ -19,33 +18,58 @@ public class LevelGenerator : EditorWindow
         GetWindow<LevelGenerator>("Level Generator");
     }
 
-    [MenuItem("Tools/Ball Game/Generate Level 30 Now")]
-    public static void GenerateLevel30Menu()
+    [MenuItem("Tools/Ball Game/Generate Levels 16 to 30 (Batch)")]
+    public static void GenerateAllLevelsMenu()
     {
-        GenerateLevel(30, 14);
+        GenerateAllLevels(16, 30);
     }
 
-    public static void GenerateLevel30Batch()
+    [MenuItem("Tools/Ball Game/Generate Levels 31 to 50 (Batch)")]
+    public static void GenerateLevels31To50Menu()
     {
-        Debug.Log("[LevelGenerator] Starting Batch Generation for Level 30...");
-        GenerateLevel(30, 14);
-        Debug.Log("[LevelGenerator] Level 30 Batch Generation Complete!");
+        GenerateAllLevels(31, 50);
+    }
+
+    public static void GenerateAllLevelsBatch()
+    {
+        Debug.Log("[LevelGenerator] CLI: Starting batch generation for Levels 16 to 30...");
+        GenerateAllLevels(16, 30);
+        Debug.Log("[LevelGenerator] CLI: All levels from 16 to 30 generated and enabled!");
+    }
+
+    public static void GenerateLevels31To50Batch()
+    {
+        Debug.Log("[LevelGenerator] CLI: Starting batch generation for Levels 31 to 50...");
+        GenerateAllLevels(31, 50);
+        Debug.Log("[LevelGenerator] CLI: All levels from 31 to 50 generated and enabled!");
     }
 
     private void OnGUI()
     {
-        GUILayout.Label("Ball Platform 3D - Level Generator", EditorStyles.boldLabel);
+        GUILayout.Label("Ball Platform 3D - Progressive Level Generator", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
-        levelNumber = EditorGUILayout.IntField("Level Number:", levelNumber);
-        trackLength = EditorGUILayout.IntSlider("Track Segments:", trackLength, 6, 25);
-        segmentSpacing = EditorGUILayout.FloatField("Segment Spacing (m):", segmentSpacing);
+        startLevel = EditorGUILayout.IntField("Start Level:", startLevel);
+        endLevel = EditorGUILayout.IntField("End Level:", endLevel);
 
-        EditorGUILayout.Space();
-        if (GUILayout.Button("Generate Level", GUILayout.Height(40)))
+        EditorGUILayout.Space(10);
+        if (GUILayout.Button($"Generate Levels {startLevel} to {endLevel} Now", GUILayout.Height(45)))
         {
-            GenerateLevel(levelNumber, trackLength);
+            GenerateAllLevels(startLevel, endLevel);
         }
+    }
+
+    public static void GenerateAllLevels(int fromLevel, int toLevel)
+    {
+        for (int lvl = fromLevel; lvl <= toLevel; lvl++)
+        {
+            // Number of segments scales from 10 (lvl 16) up to 18 (lvl 30)
+            int segments = 10 + (int)((lvl - 16) * 0.6f);
+            GenerateLevel(lvl, segments);
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log($"[LevelGenerator] Successfully generated all levels from {fromLevel} to {toLevel}!");
     }
 
     public static void GenerateLevel(int lvlNum, int segments)
@@ -57,11 +81,12 @@ public class LevelGenerator : EditorWindow
         }
 
         string scenePath = $"{sceneDirectory}/Level {lvlNum}.unity";
+        int difficultyTier = Mathf.Clamp((lvlNum - 1) / 5 + 1, 1, 6);
 
         // 1. Create a fresh scene
         Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
-        // 2. Load Required Prefabs
+        // 2. Load Core Prefabs
         GameObject startPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/useInEachFolder/Start.prefab");
         GameObject finishPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/useInEachFolder/NextLevel.prefab");
         GameObject gmPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/useInEachFolder/GameManager.prefab");
@@ -69,19 +94,25 @@ public class LevelGenerator : EditorWindow
         GameObject saveGamePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/useInEachFolder/SaveGame.prefab");
         GameObject lampPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/useInEachFolder/PTK_Lamp.prefab");
         
+        // Modular Track Prefabs
         GameObject bridgeLargePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlantAndGround/Bridge/Bridge_Large.prefab");
         GameObject bridgeSmallPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlantAndGround/Bridge/Bridge_Small.prefab");
         GameObject movingPlatformPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlantAndGround/Bridge/PTK_Cuboid_5.prefab");
         GameObject slabPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlantAndGround/Rocks/slab_1.prefab");
         GameObject hurdlePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlantAndGround/Hurdle/Hurdle01.prefab");
-        GameObject bushPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlantAndGround/Plant/bush_4.prefab");
+
+        // New Mechanics Prefabs
+        GameObject jumpPadPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Mechanics/JumpPad.prefab");
+        GameObject speedBoostPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Mechanics/SpeedBoostPad.prefab");
+        GameObject crumblingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Mechanics/CrumblingPlatform.prefab");
+        GameObject periodicTrapPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Mechanics/PeriodicTrap.prefab");
 
         // 3. Environment & Lighting
         GameObject lightObj = new GameObject("Directional Light");
         Light light = lightObj.AddComponent<Light>();
         light.type = LightType.Directional;
-        light.color = new Color(1f, 0.95f, 0.85f);
-        light.intensity = 1.1f;
+        light.color = new Color(1f, 0.95f, 0.88f);
+        light.intensity = 1.15f;
         lightObj.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
 
         GameObject eventSystemObj = new GameObject("EventSystem");
@@ -103,11 +134,10 @@ public class LevelGenerator : EditorWindow
         camObj.transform.position = new Vector3(0f, 5.5f, -8f);
         camObj.transform.rotation = Quaternion.Euler(22f, 0f, 0f);
 
-        // Attach CameraFollow
         CameraFollow camFollow = camObj.AddComponent<CameraFollow>();
         camFollow.target = spawnPoint.transform;
 
-        // 5. Instantiate Core Systems (Canvas & GameManager)
+        // 5. Instantiate Canvas & GameManager
         GameObject canvasObj = null;
         if (canvasPrefab != null)
         {
@@ -121,20 +151,12 @@ public class LevelGenerator : EditorWindow
             gmObj = (GameObject)PrefabUtility.InstantiatePrefab(gmPrefab);
             gmObj.name = "GameManager";
 
-            // Wire up LoadBalls & LoadWorld
             LoadBalls loadBalls = gmObj.GetComponent<LoadBalls>();
-            if (loadBalls != null)
-            {
-                loadBalls.spawnPosBalls = spawnPoint.transform;
-            }
+            if (loadBalls != null) loadBalls.spawnPosBalls = spawnPoint.transform;
 
             LoadWorld loadWorld = gmObj.GetComponent<LoadWorld>();
-            if (loadWorld != null)
-            {
-                loadWorld.spawnPosWorld = spawnWorldPos.transform;
-            }
+            if (loadWorld != null) loadWorld.spawnPosWorld = spawnWorldPos.transform;
 
-            // Wire up UI references from Canvas
             if (canvasObj != null)
             {
                 GameManager gmComponent = gmObj.GetComponent<GameManager>();
@@ -169,7 +191,7 @@ public class LevelGenerator : EditorWindow
             startPlatform.transform.position = Vector3.zero;
         }
 
-        // 7. Track Generation (Root container)
+        // 7. Track Generation
         GameObject levelContainer = new GameObject("Level");
         GameObject trackRoot = new GameObject("Track");
         trackRoot.transform.SetParent(levelContainer.transform);
@@ -177,28 +199,23 @@ public class LevelGenerator : EditorWindow
         GameObject hurdleRoot = new GameObject("Hurdles");
         hurdleRoot.transform.SetParent(levelContainer.transform);
 
+        if (gmObj != null)
+        {
+            SpawnCoins spawnCoins = gmObj.GetComponent<SpawnCoins>();
+            if (spawnCoins != null) spawnCoins.targetparent = trackRoot.transform;
+        }
+
         float currentZ = 6f;
         float currentX = 0f;
         float currentY = 0f;
 
-        // Connect SpawnCoins target parent
-        if (gmObj != null)
-        {
-            SpawnCoins spawnCoins = gmObj.GetComponent<SpawnCoins>();
-            if (spawnCoins != null)
-            {
-                spawnCoins.targetparent = trackRoot.transform;
-            }
-        }
-
-        // Generate diverse modular segments
+        // Progressive Generation Loop
         for (int i = 0; i < segments; i++)
         {
-            int segmentType = i % 4; // 0: Straight, 1: Turn/S-curve, 2: Obstacle/Hurdle, 3: Moving platform
-
-            // Checkpoint island at midpoint
+            // Place midpoint checkpoint with SaveGame
             if (i == segments / 2 && slabPrefab != null)
             {
+                currentX = Mathf.MoveTowards(currentX, 0f, 3f);
                 GameObject island = (GameObject)PrefabUtility.InstantiatePrefab(slabPrefab, trackRoot.transform);
                 island.name = $"MidpointIsland_{i}";
                 island.transform.position = new Vector3(currentX, currentY - 0.2f, currentZ);
@@ -216,51 +233,171 @@ public class LevelGenerator : EditorWindow
                 continue;
             }
 
-            switch (segmentType)
+            // Determine pattern based on index and difficultyTier
+            int pattern = (i + lvlNum) % 6;
+
+            switch (pattern)
             {
-                case 0: // Straight bridge section
-                    if (bridgeLargePrefab != null)
+                case 0: // Speed Boost straight runway
+                    if (speedBoostPrefab != null && difficultyTier >= 4)
                     {
-                        GameObject bridge = (GameObject)PrefabUtility.InstantiatePrefab(bridgeLargePrefab, trackRoot.transform);
-                        bridge.name = $"BridgeStraight_{i}";
-                        bridge.transform.position = new Vector3(currentX, currentY, currentZ);
-                        bridge.tag = "Bridge";
+                        GameObject boost = (GameObject)PrefabUtility.InstantiatePrefab(speedBoostPrefab, trackRoot.transform);
+                        boost.name = $"SpeedBoost_{i}";
+                        boost.transform.position = new Vector3(currentX, currentY, currentZ);
+                        boost.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+                        currentZ += 5f;
+                        if (bridgeLargePrefab != null)
+                        {
+                            GameObject longRunway = (GameObject)PrefabUtility.InstantiatePrefab(bridgeLargePrefab, trackRoot.transform);
+                            longRunway.name = $"BridgeRunway_{i}";
+                            longRunway.transform.position = new Vector3(currentX, currentY, currentZ);
+                            longRunway.tag = "Bridge";
+                        }
+                        currentZ += 10f;
                     }
-                    currentZ += 10f;
+                    else
+                    {
+                        if (bridgeLargePrefab != null)
+                        {
+                            GameObject bridge = (GameObject)PrefabUtility.InstantiatePrefab(bridgeLargePrefab, trackRoot.transform);
+                            bridge.name = $"BridgeStraight_{i}";
+                            bridge.transform.position = new Vector3(currentX, currentY, currentZ);
+                            bridge.tag = "Bridge";
+                        }
+                        currentZ += 10f;
+                    }
                     break;
 
-                case 1: // Turn / Zigzag section
-                    float turnOffset = (i % 2 == 0) ? 2.5f : -2.5f;
-                    currentX += turnOffset;
-                    if (bridgeSmallPrefab != null)
+                case 1: // Crumbling Platform danger zone
+                    if (crumblingPrefab != null && difficultyTier >= 4)
                     {
-                        GameObject bridgeTurn = (GameObject)PrefabUtility.InstantiatePrefab(bridgeSmallPrefab, trackRoot.transform);
-                        bridgeTurn.name = $"BridgeTurn_{i}";
-                        bridgeTurn.transform.position = new Vector3(currentX, currentY, currentZ);
-                        bridgeTurn.tag = "Bridge";
+                        // 2 consecutive crumbling stepping stones over a void
+                        for (int k = 0; k < 2; k++)
+                        {
+                            GameObject crumb = (GameObject)PrefabUtility.InstantiatePrefab(crumblingPrefab, trackRoot.transform);
+                            crumb.name = $"CrumblingPlatform_{i}_{k}";
+                            crumb.transform.position = new Vector3(currentX + (k == 1 ? 1.5f : 0f), currentY, currentZ);
+                            currentZ += 5f;
+                        }
+                        // Landing bridge
+                        if (bridgeSmallPrefab != null)
+                        {
+                            GameObject land = (GameObject)PrefabUtility.InstantiatePrefab(bridgeSmallPrefab, trackRoot.transform);
+                            land.name = $"BridgeLanding_{i}";
+                            land.transform.position = new Vector3(currentX + 1.5f, currentY, currentZ);
+                            land.tag = "Bridge";
+                        }
+                        currentX += 1.5f;
+                        currentZ += 8f;
                     }
-                    currentZ += 8f;
+                    else
+                    {
+                        float turnOffset = (i % 2 == 0) ? 2.5f : -2.5f;
+                        currentX += turnOffset;
+                        if (bridgeSmallPrefab != null)
+                        {
+                            GameObject turnBridge = (GameObject)PrefabUtility.InstantiatePrefab(bridgeSmallPrefab, trackRoot.transform);
+                            turnBridge.name = $"BridgeTurn_{i}";
+                            turnBridge.transform.position = new Vector3(currentX, currentY, currentZ);
+                            turnBridge.tag = "Bridge";
+                        }
+                        currentZ += 8f;
+                    }
                     break;
 
-                case 2: // Hurdle / Obstacle section
-                    if (bridgeLargePrefab != null)
+                case 2: // Jump Pad launch to elevated platform
+                    if (jumpPadPrefab != null && difficultyTier >= 3)
                     {
-                        GameObject bridgeObs = (GameObject)PrefabUtility.InstantiatePrefab(bridgeLargePrefab, trackRoot.transform);
-                        bridgeObs.name = $"BridgeObstacle_{i}";
-                        bridgeObs.transform.position = new Vector3(currentX, currentY, currentZ);
-                        bridgeObs.tag = "Bridge";
+                        GameObject jpad = (GameObject)PrefabUtility.InstantiatePrefab(jumpPadPrefab, trackRoot.transform);
+                        jpad.name = $"JumpPad_{i}";
+                        jpad.transform.position = new Vector3(currentX, currentY, currentZ);
+
+                        // Elevated landing platform ahead
+                        currentY += 2.5f;
+                        currentZ += 8f;
+                        if (slabPrefab != null)
+                        {
+                            GameObject highPlatform = (GameObject)PrefabUtility.InstantiatePrefab(slabPrefab, trackRoot.transform);
+                            highPlatform.name = $"HighPlatform_{i}";
+                            highPlatform.transform.position = new Vector3(currentX, currentY - 0.2f, currentZ);
+                            highPlatform.transform.localScale = new Vector3(2.5f, 1f, 2.5f);
+                            highPlatform.tag = "Ground";
+                        }
+                        currentZ += 10f;
                     }
-                    if (hurdlePrefab != null)
+                    else
                     {
-                        GameObject hurdle = (GameObject)PrefabUtility.InstantiatePrefab(hurdlePrefab, hurdleRoot.transform);
-                        hurdle.name = $"Hurdle_{i}";
-                        hurdle.transform.position = new Vector3(currentX, currentY + 0.3f, currentZ);
-                        hurdle.tag = "Hurdle";
+                        if (bridgeLargePrefab != null)
+                        {
+                            GameObject bridgeObs = (GameObject)PrefabUtility.InstantiatePrefab(bridgeLargePrefab, trackRoot.transform);
+                            bridgeObs.name = $"BridgeObs_{i}";
+                            bridgeObs.transform.position = new Vector3(currentX, currentY, currentZ);
+                            bridgeObs.tag = "Bridge";
+                        }
+                        if (hurdlePrefab != null)
+                        {
+                            GameObject hurdle = (GameObject)PrefabUtility.InstantiatePrefab(hurdlePrefab, hurdleRoot.transform);
+                            hurdle.name = $"Hurdle_{i}";
+                            hurdle.transform.position = new Vector3(currentX, currentY + 0.3f, currentZ);
+                            hurdle.tag = "Hurdle";
+                        }
+                        currentZ += 10f;
                     }
-                    currentZ += 10f;
                     break;
 
-                case 3: // Moving Platform section
+                case 3: // Periodic Spike Trap section
+                    if (periodicTrapPrefab != null && difficultyTier >= 5)
+                    {
+                        if (slabPrefab != null)
+                        {
+                            GameObject trapPlatform = (GameObject)PrefabUtility.InstantiatePrefab(slabPrefab, trackRoot.transform);
+                            trapPlatform.name = $"TrapPlatform_{i}";
+                            trapPlatform.transform.position = new Vector3(currentX, currentY - 0.2f, currentZ);
+                            trapPlatform.transform.localScale = new Vector3(2.5f, 1f, 2.5f);
+                            trapPlatform.tag = "Ground";
+                        }
+                        GameObject spikeTrap = (GameObject)PrefabUtility.InstantiatePrefab(periodicTrapPrefab, hurdleRoot.transform);
+                        spikeTrap.name = $"PeriodicSpike_{i}";
+                        spikeTrap.transform.position = new Vector3(currentX, currentY, currentZ);
+
+                        currentZ += 10f;
+                    }
+                    else
+                    {
+                        // Moving platform gap
+                        if (movingPlatformPrefab != null)
+                        {
+                            GameObject movingPlatform = (GameObject)PrefabUtility.InstantiatePrefab(movingPlatformPrefab, trackRoot.transform);
+                            movingPlatform.name = $"MovingPlatform_{i}";
+                            movingPlatform.transform.position = new Vector3(currentX, currentY, currentZ);
+                            movingPlatform.tag = "Ground";
+
+                            if (movingPlatform.GetComponent<StickyPlatform>() == null)
+                            {
+                                movingPlatform.AddComponent<StickyPlatform>();
+                            }
+
+                            WaypointFollow wf = movingPlatform.GetComponent<WaypointFollow>();
+                            if (wf == null) wf = movingPlatform.AddComponent<WaypointFollow>();
+                            wf.speed = 1.8f + (difficultyTier * 0.4f);
+
+                            float travelDist = 3.5f + (difficultyTier * 0.3f);
+                            GameObject wp1 = new GameObject($"Waypoint_{i}_A");
+                            wp1.transform.position = new Vector3(currentX - travelDist, currentY, currentZ);
+                            wp1.transform.SetParent(levelContainer.transform);
+
+                            GameObject wp2 = new GameObject($"Waypoint_{i}_B");
+                            wp2.transform.position = new Vector3(currentX + travelDist, currentY, currentZ);
+                            wp2.transform.SetParent(levelContainer.transform);
+
+                            wf.waypoints = new GameObject[] { wp1, wp2 };
+                        }
+                        currentZ += 12f;
+                    }
+                    break;
+
+                case 4: // Moving platform with high speed
                     if (movingPlatformPrefab != null)
                     {
                         GameObject movingPlatform = (GameObject)PrefabUtility.InstantiatePrefab(movingPlatformPrefab, trackRoot.transform);
@@ -268,19 +405,14 @@ public class LevelGenerator : EditorWindow
                         movingPlatform.transform.position = new Vector3(currentX, currentY, currentZ);
                         movingPlatform.tag = "Ground";
 
-                        // Add StickyPlatform
                         if (movingPlatform.GetComponent<StickyPlatform>() == null)
                         {
                             movingPlatform.AddComponent<StickyPlatform>();
                         }
 
-                        // Waypoint follow setup
                         WaypointFollow wf = movingPlatform.GetComponent<WaypointFollow>();
-                        if (wf == null)
-                        {
-                            wf = movingPlatform.AddComponent<WaypointFollow>();
-                        }
-                        wf.speed = 2.5f;
+                        if (wf == null) wf = movingPlatform.AddComponent<WaypointFollow>();
+                        wf.speed = 2.2f + (difficultyTier * 0.4f);
 
                         GameObject wp1 = new GameObject($"Waypoint_{i}_A");
                         wp1.transform.position = new Vector3(currentX - 3.5f, currentY, currentZ);
@@ -294,18 +426,31 @@ public class LevelGenerator : EditorWindow
                     }
                     currentZ += 12f;
                     break;
+
+                case 5: // Narrow S-curve balance beam
+                    float offset = (i % 2 == 0) ? -2.5f : 2.5f;
+                    currentX += offset;
+                    if (bridgeSmallPrefab != null)
+                    {
+                        GameObject narrowBridge = (GameObject)PrefabUtility.InstantiatePrefab(bridgeSmallPrefab, trackRoot.transform);
+                        narrowBridge.name = $"NarrowBridge_{i}";
+                        narrowBridge.transform.position = new Vector3(currentX, currentY, currentZ);
+                        narrowBridge.tag = "Bridge";
+                    }
+                    currentZ += 8f;
+                    break;
             }
 
-            // Occasional decorative bush/lamp along borders
+            // Decorative lamp
             if (i % 3 == 0 && lampPrefab != null)
             {
                 GameObject lamp = (GameObject)PrefabUtility.InstantiatePrefab(lampPrefab, trackRoot.transform);
-                lamp.transform.position = new Vector3(currentX + 2.2f, currentY, currentZ - 4f);
+                lamp.transform.position = new Vector3(currentX + 2.2f, currentY, currentZ - 3f);
             }
         }
 
-        // 8. Align to Center and Place Finish Gate
-        currentX = Mathf.MoveTowards(currentX, 0f, 5f);
+        // 8. Final stretch & Finish Gate
+        currentX = Mathf.MoveTowards(currentX, 0f, 4f);
         if (bridgeLargePrefab != null)
         {
             GameObject finalBridge = (GameObject)PrefabUtility.InstantiatePrefab(bridgeLargePrefab, trackRoot.transform);
@@ -322,45 +467,50 @@ public class LevelGenerator : EditorWindow
             finishObj.transform.position = new Vector3(currentX, currentY, currentZ);
         }
 
-        // 9. Void Killplane (BackGround tag triggers BallPlayerMovement.Die())
+        // 9. Void Killplane
         GameObject killplane = GameObject.CreatePrimitive(PrimitiveType.Cube);
         killplane.name = "VoidKillGround";
         killplane.tag = "BackGround";
-        killplane.transform.position = new Vector3(0f, -12f, currentZ * 0.5f);
-        killplane.transform.localScale = new Vector3(150f, 1f, currentZ + 50f);
+        killplane.transform.position = new Vector3(0f, -15f, currentZ * 0.5f);
+        killplane.transform.localScale = new Vector3(180f, 1f, currentZ + 80f);
         
-        // Hide mesh renderer so it is an invisible trigger collider
         MeshRenderer kr = killplane.GetComponent<MeshRenderer>();
         if (kr != null) kr.enabled = false;
 
         // 10. Save Scene
         EditorSceneManager.SaveScene(scene, scenePath);
-        Debug.Log($"[LevelGenerator] Saved Scene successfully: {scenePath}");
 
-        // 11. Register scene in EditorBuildSettings
+        // 11. Register in Build Settings & Enable
         AddSceneToBuildSettings(scenePath);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        Debug.Log($"[LevelGenerator] Generated Level {lvlNum} (Tier {difficultyTier}, {segments} segments) -> {scenePath}");
     }
 
     private static void AddSceneToBuildSettings(string scenePath)
     {
         EditorBuildSettingsScene[] existingScenes = EditorBuildSettings.scenes;
-        foreach (var s in existingScenes)
+        bool found = false;
+
+        for (int i = 0; i < existingScenes.Length; i++)
         {
-            if (s.path == scenePath)
+            if (existingScenes[i].path == scenePath)
             {
-                s.enabled = true;
-                EditorBuildSettings.scenes = existingScenes;
-                return;
+                existingScenes[i].enabled = true;
+                found = true;
+                break;
             }
         }
 
-        var newScenes = new EditorBuildSettingsScene[existingScenes.Length + 1];
-        Array.Copy(existingScenes, newScenes, existingScenes.Length);
-        newScenes[newScenes.Length - 1] = new EditorBuildSettingsScene(scenePath, true);
-        EditorBuildSettings.scenes = newScenes;
-        Debug.Log($"[LevelGenerator] Added {scenePath} to EditorBuildSettings!");
+        if (found)
+        {
+            EditorBuildSettings.scenes = existingScenes;
+        }
+        else
+        {
+            var newScenes = new EditorBuildSettingsScene[existingScenes.Length + 1];
+            Array.Copy(existingScenes, newScenes, existingScenes.Length);
+            newScenes[newScenes.Length - 1] = new EditorBuildSettingsScene(scenePath, true);
+            EditorBuildSettings.scenes = newScenes;
+        }
     }
 }
 #endif

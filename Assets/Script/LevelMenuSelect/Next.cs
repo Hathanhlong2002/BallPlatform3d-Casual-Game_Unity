@@ -20,8 +20,21 @@ public class Next : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("Coin",PlayerPrefs.GetInt("Coin")+ItemCollector.instance.coins);
+            PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + (ItemCollector.instance != null ? ItemCollector.instance.coins : 0));
         }
-        SceneManager.LoadScene(nextSceneLoad);
+
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene.StartsWith("Level ") && int.TryParse(currentScene.Substring(6), out int currentLvl))
+        {
+            int nextLvl = currentLvl + 1;
+            if (nextLvl <= 50)
+            {
+                SceneManager.LoadScene("Level " + nextLvl);
+                return;
+            }
+        }
+
+        // Đã hoàn thành màn 50 hoặc không có màn tiếp theo -> quay về LevelSelection
+        SceneManager.LoadScene("LevelSelection");
     }
 }

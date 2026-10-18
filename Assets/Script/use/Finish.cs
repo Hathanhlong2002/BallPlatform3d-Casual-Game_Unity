@@ -44,11 +44,15 @@ public class Finish : MonoBehaviour
             GameManager.instance.VictoryDialog.SetActive(true);
         }
 
-        int currentLevel = PlayerPrefs.GetInt("level", 1);
-        if (nextSceneLoad - 2 > currentLevel)
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName.StartsWith("Level ") && int.TryParse(sceneName.Substring(6), out int currentLvl))
         {
-            PlayerPrefs.SetInt("unlockedLevel", nextSceneLoad - 1);
-            PlayerPrefs.SetInt("level", currentLevel + 1);
+            int unlocked = PlayerPrefs.GetInt("unlockedLevel", 1);
+            if (currentLvl >= unlocked)
+            {
+                PlayerPrefs.SetInt("unlockedLevel", currentLvl + 1);
+            }
+            PlayerPrefs.SetInt("level", currentLvl);
             PlayerPrefs.Save();
         }
     }
