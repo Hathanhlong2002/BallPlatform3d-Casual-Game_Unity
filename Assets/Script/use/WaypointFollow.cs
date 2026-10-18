@@ -4,27 +4,47 @@ using UnityEngine;
 
 public class WaypointFollow : MonoBehaviour
 {
-    public GameObject[] waypoints;
-    int currentWaypointIndex=0;
-    public static WaypointFollow instance;
-    public float speed=1f;
+    [SerializeField] public GameObject[] waypoints;
+    [SerializeField] public float speed = 1f;
 
+    private int currentWaypointIndex = 0;
+    private Rigidbody rb;
 
     private void Awake()
     {
-        instance=this;
-    }
-    private void Update()
-    {
-        if(Vector3.Distance(transform.position,waypoints[currentWaypointIndex].transform.position)<0.1f)
+        rb = GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            currentWaypointIndex++;
-            if(currentWaypointIndex>=waypoints.Length)
-            {
-                currentWaypointIndex=0;
-            }
+            rb.isKinematic = true;
         }
-        transform.position=Vector3.MoveTowards(transform.position,waypoints[currentWaypointIndex].transform.position,speed*Time.deltaTime);
     }
 
+    private void FixedUpdate()
+    {
+        if (waypoints == null || waypoints.Length == 0) return;
+
+        GameObject targetWaypoint = waypoints[currentWaypointIndex];
+        if (targetWaypoint == null) return;
+
+        Vector3 currentPos = rb != null ? rb.position : transform.position;
+        Vector3 targetPos = targetWaypoint.transform.position;
+
+        if (Vector3.Distance(currentPos, targetPos) < 0.1f)
+        {
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+            targetWaypoint = waypoints[currentWaypointIndex];
+            if (targetWaypoint == null) return;
+            targetPos = targetWaypoint.transform.position;
+        }
+
+        Vector3 nextPos = Vector3.MoveTowards(currentPos, targetPos, speed * Time.fixedDeltaTime);
+        if (rb != null)
+        {
+            rb.MovePosition(nextPos);
+        }
+        else
+        {
+            transform.position = nextPos;
+        }
+    }
 }

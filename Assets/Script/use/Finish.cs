@@ -8,39 +8,48 @@ public class Finish : MonoBehaviour
     public GameObject rightDoor;
     public GameObject leftDoor;
     public int nextSceneLoad;
+    private bool isFinished = false;
+
     private void Awake() 
     {
-        nextSceneLoad=SceneManager.GetActiveScene().buildIndex+1;
+        nextSceneLoad = SceneManager.GetActiveScene().buildIndex + 1;
     }
-    void Start()
+
+    private void OnTriggerEnter(Collider other)
     {
-        nextSceneLoad=SceneManager.GetActiveScene().buildIndex+1;   
-    }
-    void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.CompareTag("Player"))
+        if (isFinished) return;
+
+        if (other.gameObject.CompareTag("Player") || other.gameObject.GetComponent<BallPlayerMovement>() != null)
         {
-            
-            AudioManager.instance.audioSource.clip=AudioManager.instance.clipVictory;
-			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
-            rightDoor.transform.rotation = Quaternion.Euler(0f, -90f, 0f);;
-            leftDoor.transform.rotation = Quaternion.Euler(0f, 270f, 0f);
-            StartCoroutine(Delay(2.0f));
-            GameManager.instance.VictoryDialog.SetActive(true);
-            if(nextSceneLoad-2>PlayerPrefs.GetInt("level") )
-            {
-                PlayerPrefs.SetInt("unlockedLevel",nextSceneLoad-1);
-                PlayerPrefs.SetInt("level",PlayerPrefs.GetInt("level")+1);
-                
-                Debug.Log("level"+PlayerPrefs.GetInt("level"));
-                Debug.Log("unlockedLevel"+PlayerPrefs.GetInt("unlockedLevel"));
-                Debug.Log("nextsceneLoad"+nextSceneLoad);
-            }
+            StartCoroutine(VictorySequence());
+        }
+    }
+
+    private IEnumerator VictorySequence()
+    {
+        isFinished = true;
+
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySfx(AudioManager.instance.clipVictory);
         }
 
-    }
-    private IEnumerator Delay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
+        if (rightDoor != null) rightDoor.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+        if (leftDoor != null) leftDoor.transform.rotation = Quaternion.Euler(0f, 270f, 0f);
+
+        yield return new WaitForSeconds(2.0f);
+
+        if (GameManager.instance != null && GameManager.instance.VictoryDialog != null)
+        {
+            GameManager.instance.VictoryDialog.SetActive(true);
+        }
+
+        int currentLevel = PlayerPrefs.GetInt("level", 1);
+        if (nextSceneLoad - 2 > currentLevel)
+        {
+            PlayerPrefs.SetInt("unlockedLevel", nextSceneLoad - 1);
+            PlayerPrefs.SetInt("level", currentLevel + 1);
+            PlayerPrefs.Save();
+        }
     }
 }

@@ -10,32 +10,38 @@ public class LoadingSceneManager : MonoBehaviour
 
     private void Start()
     {
-        // Bắt đầu tiến trình loading thông qua coroutine
-        StartCoroutine(LoadSceneWithTiming());
+        StartCoroutine(LoadSceneAsync());
     }
 
-    IEnumerator LoadSceneWithTiming()
+    private IEnumerator LoadSceneAsync()
     {
-        float loadingTime = 30.0f; // Thời gian loading mong muốn (30 giây)
-        float elapsedTime = 0.0f;  // Thời gian đã trôi qua
-
-        while (elapsedTime < loadingTime)
-        {
-            elapsedTime += Time.deltaTime;
-
-            float progress = elapsedTime / loadingTime; // Tính phần trăm tương ứng
-
-            // Cập nhật ProgressBar hoặc keo trượt và thông tin loading
-            loadingBar.value = progress;
-            loadingText.text = "Loading: " + (progress * 100).ToString("F0") + "% ..."; // Định dạng số nguyên trong TextMeshPro
-
-            yield return null;
-        }
-
-        // Khi đã hoàn thành thời gian loading, tiến hành tải scene
         AsyncOperation operation = SceneManager.LoadSceneAsync("LevelSelection");
+        if (operation == null) yield break;
+
+        operation.allowSceneActivation = false;
+        float displayProgress = 0f;
+
         while (!operation.isDone)
         {
+            // operation.progress ranges 0 to 0.9 before activation
+            float targetProgress = Mathf.Clamp01(operation.progress / 0.9f);
+            displayProgress = Mathf.MoveTowards(displayProgress, targetProgress, Time.deltaTime * 2f);
+
+            if (loadingBar != null)
+            {
+                loadingBar.value = displayProgress;
+            }
+            if (loadingText != null)
+            {
+                loadingText.text = $"Loading: {(displayProgress * 100f):F0}% ...";
+            }
+
+            // Once loaded and progress reaches 100%, activate the scene
+            if (operation.progress >= 0.9f && displayProgress >= 0.99f)
+            {
+                operation.allowSceneActivation = true;
+            }
+
             yield return null;
         }
     }

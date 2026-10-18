@@ -5,28 +5,46 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class ItemCollector : MonoBehaviour
 {
+    public static ItemCollector instance;
+
     public Text coinsText;
     public Text hearthText;
-    public int coins=0;
-    public int hear=0;
-    public static ItemCollector instance;
-    void Awake()
+    public int coins = 0;
+    public int hear = 0;
+
+    private void Awake()
     {
-        instance=this;
+        instance = this;
     }
-    void Start()
+
+    private void Start()
     {
-        if (!PlayerPrefs.HasKey("Coin"))
-        {
-            PlayerPrefs.SetInt("Coin", 0);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("Coin",PlayerPrefs.GetInt("Coin")+coins);
-        }
-        
-        coinsText.text="Coins: "+PlayerPrefs.GetInt("Coin");
-        hearthText.text="Hearth: "+hear;
+        UpdateUI();
     }
-   
+
+    public void AddCoins(int amount)
+    {
+        coins += amount;
+        UpdateUI();
+    }
+
+    public void AddHeart(int amount = 1)
+    {
+        hear += amount;
+        UpdateUI();
+    }
+
+    public bool DeductHeart()
+    {
+        hear--;
+        UpdateUI();
+        return hear < 0;
+    }
+
+    public void UpdateUI()
+    {
+        int totalCoins = PlayerPrefs.GetInt("Coin", 0) + coins;
+        if (coinsText != null) coinsText.text = "Coins: " + totalCoins;
+        if (hearthText != null) hearthText.text = "Hearth: " + hear;
+    }
 }

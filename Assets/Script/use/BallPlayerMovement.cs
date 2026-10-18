@@ -2,113 +2,138 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class BallPlayerMovement : MonoBehaviour
 {
+    [SerializeField] private float movementSpeed = 5f;
+    [SerializeField] private float respawnDelay = 1f;
+
     private Rigidbody rb;
-    private float movementSpeed = 5f;
-    private bool isDead=false;
-    void Start()
+    private Vector2 inputVector;
+    private Vector3 respawnPoint;
+    private bool isDead = false;
+
+    private void Awake()
     {
-        rb=GetComponent<Rigidbody>();
-        PlayerPrefs.SetFloat("RespawnPosX", 0f);
-        PlayerPrefs.SetFloat("RespawnPosY", 0f);
-        PlayerPrefs.SetFloat("RespawnPosZ", 0f);
-        PlayerPrefs.Save();
-        rb.isKinematic=true;
+        rb = GetComponent<Rigidbody>();
     }
-    void Update()
+
+    private void Start()
     {
-        if(Input.GetKey(KeyCode.K))
+        respawnPoint = transform.position + Vector3.up * 0.5f;
+    }
+
+    private void Update()
+    {
+        if (isDead)
         {
-            rb.isKinematic=true;
+            inputVector = Vector2.zero;
+            return;
+        }
+
+        if (Input.GetKey(KeyCode.K))
+        {
+            inputVector = Vector2.zero;
         }
         else
         {
-            rb.isKinematic=false;
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
-            rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y, verticalInput * movementSpeed); 
-        }
-        if (isDead)
-        {
-            ItemCollector.instance.hear-=1;
-            ItemCollector.instance.hearthText.text="Hearth: "+ItemCollector.instance.hear;
-            StartCoroutine(Delay(1f));
-            RespawnCharacter();
+            inputVector.x = Input.GetAxis("Horizontal");
+            inputVector.y = Input.GetAxis("Vertical");
         }
     }
-    //Xử lý trạng thái chết
-    private void RespawnCharacter()
+
+    private void FixedUpdate()
     {
-        if(ItemCollector.instance.hear<0)
+        if (isDead || rb == null || rb.isKinematic) return;
+
+        rb.linearVelocity = new Vector3(inputVector.x * movementSpeed, rb.linearVelocity.y, inputVector.y * movementSpeed);
+    }
+
+    public void Die()
+    {
+        if (isDead) return;
+        StartCoroutine(HandleDeathSequence());
+    }
+
+    private IEnumerator HandleDeathSequence()
+    {
+        isDead = true;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySfx(AudioManager.instance.clipDie);
+        }
+
+        bool isGameOver = false;
+        if (ItemCollector.instance != null)
+        {
+            isGameOver = ItemCollector.instance.DeductHeart();
+        }
+
+        yield return new WaitForSeconds(respawnDelay);
+
+        if (isGameOver)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {
+            transform.position = respawnPoint;
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
             isDead = false;
-            Vector3 pos = new Vector3(PlayerPrefs.GetFloat("RespawnPosX"),PlayerPrefs.GetFloat("RespawnPosY")+1.0f,PlayerPrefs.GetFloat("RespawnPosZ"));
-            gameObject.transform.position = pos;
         }
     }
 
-    //Xử lý va chạm với các vật thể
     private void OnTriggerEnter(Collider other) 
-	{
-		if(other.CompareTag("Coin"))
-		{
-			AudioManager.instance.audioSource.clip=AudioManager.instance.GetCoin;
-			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
-			Destroy(other.gameObject);
-            ItemCollector.instance.coins+=10;
-            int coinsTmp=PlayerPrefs.GetInt("Coin")+ItemCollector.instance.coins;
-            
-            ItemCollector.instance.coinsText.text="Coins: "+(coinsTmp);
-		}
-        if(other.CompareTag("Hearth"))
+    {
+        if (other.CompareTag("Coin"))
         {
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySfx(AudioManager.instance.GetCoin);
+            }
             Destroy(other.gameObject);
-            ItemCollector.instance.hear++;
-            ItemCollector.instance.hearthText.text="Hearth: "+ItemCollector.instance.hear;
-            StartCoroutine(Delay(1f));
-            AudioManager.instance.audioSource.clip=AudioManager.instance.GameBonus;
-			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
             
+            if (ItemCollector.instance != null)
+            {
+                ItemCollector.instance.AddCoins(10);
+            }
         }
-	}
-	void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.CompareTag("BackGround"))
+        else if (other.CompareTag("Hearth"))
         {
-            rb.isKinematic=true;
-            AudioManager.instance.audioSource.clip=AudioManager.instance.clipDie;
-			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
-            isDead=true;
-			
-        }
-        if(collision.gameObject.CompareTag("Player"))
-        {
-            rb.isKinematic=true;
-            AudioManager.instance.audioSource.clip=AudioManager.instance.clipDie;
-			AudioManager.instance.audioSource.PlayOneShot(AudioManager.instance.audioSource.clip);
-            isDead=true;
-			
-        }
-        if(collision.gameObject.CompareTag("SaveGame"))
-        {
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySfx(AudioManager.instance.GameBonus);
+            }
+            Destroy(other.gameObject);
             
-            PlayerPrefs.SetFloat("RespawnPosX", collision.gameObject.transform.position.x);
-            PlayerPrefs.SetFloat("RespawnPosY", collision.gameObject.transform.position.y);
-            PlayerPrefs.SetFloat("RespawnPosZ", collision.gameObject.transform.position.z);
-            PlayerPrefs.Save();
-            
+            if (ItemCollector.instance != null)
+            {
+                ItemCollector.instance.AddHeart(1);
+            }
         }
+    }
 
-    }
-	
-    private IEnumerator Delay(float delay)
+    private void OnCollisionEnter(Collision collision)
     {
-        yield return new WaitForSeconds(delay);
+        if (collision.gameObject.CompareTag("BackGround"))
+        {
+            Die();
+        }
+        else if (collision.gameObject.CompareTag("SaveGame"))
+        {
+            respawnPoint = collision.gameObject.transform.position + Vector3.up * 1f;
+        }
     }
-    
 } 

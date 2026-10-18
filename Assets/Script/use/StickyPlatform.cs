@@ -6,14 +6,15 @@ public class StickyPlatform : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.name=="ball_player")
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.GetComponent<BallPlayerMovement>() != null)
         {
             collision.gameObject.transform.SetParent(transform);
         }
     }
-     private void OnCollisionExit(Collision collision)
+
+    private void OnCollisionExit(Collision collision)
     {
-        if(collision.gameObject.name=="ball_player")
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.GetComponent<BallPlayerMovement>() != null)
         {
             collision.gameObject.transform.SetParent(null);
         }
